@@ -1,4 +1,3 @@
-import { Account } from './bank'
 import { ATMControllerError } from "./errors";
 import { ATMController } from "./atm";
 
@@ -61,13 +60,12 @@ describe('ATMController works expectedly', () => {
     })
 
     test('deposit() returns error with too small or too big money', async () => {
-      return Promise.all([
-        fooAtm.deposit(0),
-        fooAtm.deposit(1000000)
-      ])
-        .catch(err => {
-          expect(err).toBeInstanceOf(ATMControllerError)
-        })
+      try {
+        await fooAtm.deposit(0)
+        await fooAtm.deposit(1000000)
+      } catch (err) {
+        expect(err).toBeInstanceOf(ATMControllerError)
+      }
     })
 
     test('deposit() works expectedly', async () => {
@@ -75,11 +73,11 @@ describe('ATMController works expectedly', () => {
       await barAtm.deposit(100)
       await bazAtm.deposit(500)
 
-      expect(fooAtm.checkBalance())
-        .toBe(1200)
+      const fooBalance = await fooAtm.checkBalance()
+      expect(fooBalance).toBe(1200)
 
-      expect(bazAtm.checkBalance())
-        .toBe(2500)
+      const bazBalance = await bazAtm.checkBalance()
+      expect(bazBalance).toBe(2500)
     })
 
     test('withdraw() returns error with too much amount', async () => {
@@ -91,8 +89,8 @@ describe('ATMController works expectedly', () => {
       // TODO: concurrency
       await fooAtm.withdraw(100)
 
-      expect(fooAtm.checkBalance())
-        .toBe(1100)
+      const fooBalance = await fooAtm.checkBalance()
+      expect(fooBalance).toBe(1100)
     })
   })
 })

@@ -6,7 +6,7 @@ import { ATMController } from './atm';
  *  - User does operations with the account
  *  - Exit
  *
- *  This is for demonstration purpose
+ *  This file is for demonstration only
  */
 async function ATMflow (commands: string[]): Promise<unknown> {
   try {
@@ -16,28 +16,31 @@ async function ATMflow (commands: string[]): Promise<unknown> {
     await atm.insertCard(cardNumber)
     await atm.enterPIN(PIN)
 
+    console.log('ATM session: ', atm.sessionID, atm.createdAt)
+    console.log('Account: ', atm.account?.accountID)
+
     for (const cmd of cmds) {
       const [op, operand] = cmd.split(',')
 
       switch (op) {
         case 'checkBalance': {
-          const balance = atm.checkBalance()
+          const balance = await atm.checkBalance()
           console.log(op, ':', balance)
           break
         }
         case 'deposit':
           await atm.deposit(parseInt(operand, 10))
-          console.log(op, operand, ':', atm.checkBalance())
+          console.log(op, operand, ':', await atm.checkBalance())
           break
         case 'withdraw':
           await atm.withdraw(parseInt(operand, 10))
-          console.log(op, operand, ':', atm.checkBalance())
+          console.log(op, operand, ':', await atm.checkBalance())
           break
         default:
           console.log('noop')
       }
     }
-
+    console.log('done')
     return
   } catch (err) {
     console.error(err)
@@ -46,11 +49,39 @@ async function ATMflow (commands: string[]): Promise<unknown> {
 
 // eslint-disable-next-line
 (async () => {
+  console.log('---------------------------------')
   await ATMflow([
     '12340000',
     '1234',
     'checkBalance',
     'deposit,100',
     'withdraw,200'
+  ])
+
+  console.log('Non-existing account ---------------------')
+  await ATMflow([
+    '12340009',
+    '1234'
+  ])
+
+  console.log('Invalid PIN number -----------------------')
+  await ATMflow([
+    '12340001',
+    '5678'
+  ])
+
+  console.log('Not enough money -----------------------')
+  await ATMflow([
+    '12340001',
+    '1234',
+    'withdraw,100000'
+  ])
+
+  console.log('---------------------------------')
+  await ATMflow([
+    '12340003',
+    '5678',
+    'withdraw,1000',
+    'checkBalance'
   ])
 })()

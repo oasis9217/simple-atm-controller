@@ -5,6 +5,7 @@ import {
   Account,
   fetchAccount,
   validatePIN,
+  getAccountBalance,
   updateAccountBalance
 } from './bank'
 
@@ -72,6 +73,7 @@ export class ATMController {
      */
   async insertCard (cardNumber: string): Promise<boolean> {
     validateCardNumberFormat(cardNumber)
+
     const account = await fetchAccount(cardNumber)
     this.account = account
 
@@ -86,17 +88,17 @@ export class ATMController {
     if (PIN.length < 4) {
       throw new ATMControllerError(400, 'Invalid PIN number')
     }
-    await validatePIN(this.account, PIN)
 
+    await validatePIN(this.account, PIN)
     return true
   }
 
-  checkBalance (): number {
+  async checkBalance (): Promise<number> {
     if (this.account === null) {
       throw new ATMControllerError(500, 'User account is not set')
     }
-
-    return this.account.balance
+    const balance = await getAccountBalance(this.account)
+    return balance
   }
 
   async deposit (amount: number): Promise<boolean> {
@@ -106,9 +108,9 @@ export class ATMController {
 
     validateCashAmount(amount)
 
-    const balance = this.account.balance + amount
+    const balance = await this.checkBalance()
     await takeCashIn()
-    await updateAccountBalance(this.account, balance)
+    await updateAccountBalance(this.account, balance + amount)
 
     return true
   }
@@ -120,13 +122,14 @@ export class ATMController {
 
     validateCashAmount(amount)
 
-    if (amount > this.account.balance) {
+    const balance = await this.checkBalance()
+
+    if (amount > balance) {
       throw new ATMControllerError(400, 'Not enough balance')
     }
 
-    const balance = this.account.balance - amount
     await takeCashOut()
-    await updateAccountBalance(this.account, balance)
+    await updateAccountBalance(this.account, balance - amount)
 
     return true
   }

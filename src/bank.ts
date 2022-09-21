@@ -64,6 +64,10 @@ export async function validatePIN (account: Account, PIN: string): Promise<boole
   return true
 }
 
+export async function getAccountBalance (account: Account): Promise<number> {
+  return account.balance
+}
+
 export async function updateAccountBalance (account: Account, balance: number): Promise<boolean> {
   /**
    * Never should appear in practice
