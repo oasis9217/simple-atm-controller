@@ -1,7 +1,7 @@
 /**
  * Mock functions of Bank service
  */
-import { sign } from 'jsonwebtoken'
+import md5 from 'md5'
 import db from './sampleDB.json'
 import { BankControllerError } from './errors'
 
@@ -41,7 +41,7 @@ function decodeAccount (json: AccountJSON): Account {
 }
 
 function simpleHash (str: string): string {
-  return sign(str, 'simple')
+  return md5(str)
 }
 
 export async function fetchAccount (cardNumber: string): Promise<Account> {

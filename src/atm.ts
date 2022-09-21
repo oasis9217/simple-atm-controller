@@ -134,3 +134,5 @@ export class ATMController {
     return true
   }
 }
+
+export default ATMController

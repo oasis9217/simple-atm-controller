@@ -5,7 +5,7 @@
       "user_name": "John Doe",
       "user_id": "vq0toi1uxa",
       "card_numbers": ["12340000", "12340001"],
-      "pin": "eyJhbGciOiJIUzI1NiJ9.MTIzNA.ZTGF4oDkyWnI9i5XbiG1bvL7PfAgBR5nvSFNNHJly5k",
+      "pin": "81dc9bdb52d04dc20036dbd8313ed055",
       "balance": 1000,
       "created_at": "2022-09-20T06:16:08.000Z"
     },
@@ -14,7 +14,7 @@
       "user_name": "John Doe",
       "user_id": "vq0toi1uxa",
       "card_numbers": ["12340002"],
-      "pin": "eyJhbGciOiJIUzI1NiJ9.MTIzNA.ZTGF4oDkyWnI9i5XbiG1bvL7PfAgBR5nvSFNNHJly5k",
+      "pin": "81dc9bdb52d04dc20036dbd8313ed055",
       "balance": 500,
       "created_at": "2022-09-21T06:16:08.000Z"
     },
@@ -23,7 +23,7 @@
       "user_name": "Jane Doe",
       "user_id": "iclkrkkbd9",
       "card_numbers": ["12340003"],
-      "pin": "eyJhbGciOiJIUzI1NiJ9.NTY3OA.4wUKWxLdSRSdjFawPdcJRNb12DWnMtFIAKP611OX370",
+      "pin": "674f3c2c1a8a6f90461e8a66fb5550ba",
       "balance": 2000,
       "created_at": "2022-09-20T06:16:08.000Z"
     }

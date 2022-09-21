@@ -5,9 +5,11 @@
 - Typescript >= 4.8.3
 
 ### Script
+- run demonstration: `npm run demo`
+- run demonstration with docker `npm run docker:build && npm run docker:run`
 - test: `npm run test`
-- run demonstration code: `npm run start:demo`
-- run as docker `npm run docker:build && npm run docker:run`
+- compile to JS: `npm run compile`
+- build to distribute: `npm run build`
 
 ### Description
 

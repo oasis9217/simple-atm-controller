@@ -6,4 +6,4 @@ WORKDIR /opt/atm
 
 RUN npm install
 
-CMD ["npm", "run", "start:demo"]
+CMD ["npm", "run", "demo"]
