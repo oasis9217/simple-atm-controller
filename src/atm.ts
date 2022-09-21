@@ -1,4 +1,5 @@
-import { fetchAccount, validatePIN, Account } from './bank'
+import {fetchAccount, validatePIN, Account, updateAccountBalance} from './bank'
+import { takeCashIn, takeCashOut } from './cashbin';
 import { ATMControllerError } from './errors'
 
 interface ATMControllerResponse {
@@ -31,6 +32,22 @@ function validateCardNumberFormat (cardNumber: string): boolean {
   return true
 }
 
+function validateCachAmount (amount: number): boolean {
+  if (!Number.isInteger(amount)) {
+    throw new ATMControllerError(400, 'Invalid cash amount')
+  }
+
+  if (amount < 1) {
+    throw new ATMControllerError(400, 'Invalid cash amount')
+  }
+
+  if (amount > 999999) {
+    throw new ATMControllerError(400, 'Too much cash requests')
+  }
+
+  return true
+}
+
 export class ATMController {
   /**
      * insertCard() triggered by the card reader
@@ -54,5 +71,29 @@ export class ATMController {
 
   checkBalance (account: Account): number {
     return account.balance
+  }
+
+  async deposit (account: Account, amount: number): Promise<boolean> {
+    validateCachAmount(amount)
+
+    const balance = account.balance + amount
+    await takeCashIn()
+    await updateAccountBalance(account, balance)
+
+    return true
+  }
+
+  async withdraw (account: Account, amount: number): Promise<boolean> {
+    validateCachAmount(amount)
+
+    if (amount > account.balance) {
+      throw new ATMControllerError(400, 'Not enough balance')
+    }
+
+    const balance = account.balance - amount
+    await takeCashOut()
+    await updateAccountBalance(account, balance)
+
+    return true
   }
 }

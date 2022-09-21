@@ -17,5 +17,6 @@
     },
     "ignorePatterns": ["src/**/*.test.*"],
     "rules": {
+        "@typescript-eslint/semi": "off"
     }
 }

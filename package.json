@@ -24,7 +24,8 @@
       "tsx",
       "js",
       "json"
-    ]
+    ],
+    "testTimeout": 10000
   },
   "author": "songhui.ryu",
   "license": "ISC",

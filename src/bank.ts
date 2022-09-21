@@ -63,3 +63,16 @@ export async function validatePIN (account: Account, PIN: string): Promise<boole
 
   return true
 }
+
+export async function updateAccountBalance (account: Account, balance: number): Promise<boolean> {
+  /**
+   * Never should appear in practice
+   */
+  mockAccounts.forEach(a => {
+    if (a.accountID === account.accountID) {
+      a.balance = balance
+    }
+  })
+
+  return true
+}
