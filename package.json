@@ -4,10 +4,10 @@
   "description": "Simple APM controller",
   "main": "index.js",
   "scripts": {
+    "start": "ts-node src/index.ts",
     "compile": "tsc build",
     "test": "jest",
-    "lint": "eslint ./src",
-    "start": "ts-node src/index.ts"
+    "lint": "eslint ./src --fix"
   },
   "jest": {
     "transform": {
@@ -27,7 +27,6 @@
     ],
     "testTimeout": 10000
   },
-  "author": "songhui.ryu",
   "license": "ISC",
   "devDependencies": {
     "@types/jest": "^29.0.3",

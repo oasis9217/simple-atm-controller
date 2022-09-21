@@ -1,25 +1,32 @@
-import {fetchAccount, validatePIN, Account, updateAccountBalance} from './bank'
-import { takeCashIn, takeCashOut } from './cashbin';
 import { ATMControllerError } from './errors'
+import { makeID } from './utils'
+import { takeCashIn, takeCashOut } from './cashbin'
+import {
+  Account,
+  fetchAccount,
+  validatePIN,
+  updateAccountBalance
+} from './bank'
 
 interface ATMControllerResponse {
   status: 'success' | 'error'
   [key: string]: unknown
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function errorHandler (error: Error | unknown): ATMControllerResponse {
   if (error instanceof Error) {
     // TODO: logger
     return {
       status: 'error',
       reason: error.message,
-      error: error
+      error
     }
   }
 
   return {
     status: 'error',
-    error: error
+    error
   }
 }
 
@@ -32,7 +39,7 @@ function validateCardNumberFormat (cardNumber: string): boolean {
   return true
 }
 
-function validateCachAmount (amount: number): boolean {
+function validateCashAmount (amount: number): boolean {
   if (!Number.isInteger(amount)) {
     throw new ATMControllerError(400, 'Invalid cash amount')
   }
@@ -49,50 +56,77 @@ function validateCachAmount (amount: number): boolean {
 }
 
 export class ATMController {
+  sessionID: string
+  createdAt: Date
+  account: Account | null
+
+  constructor () {
+    this.sessionID = makeID()
+    this.createdAt = new Date()
+    this.account = null
+  }
+
   /**
      * insertCard() triggered by the card reader
      * @param cardNumber
      */
-  async insertCard (cardNumber: string): Promise<Account> {
+  async insertCard (cardNumber: string): Promise<boolean> {
     validateCardNumberFormat(cardNumber)
     const account = await fetchAccount(cardNumber)
-
-    return account
-  }
-
-  async enterPIN (account: Account, PIN: string): Promise<Account> {
-    if (PIN.length < 4) {
-      throw new ATMControllerError(400, 'Invalid PIN number')
-    }
-    await validatePIN(account, PIN)
-
-    return account
-  }
-
-  checkBalance (account: Account): number {
-    return account.balance
-  }
-
-  async deposit (account: Account, amount: number): Promise<boolean> {
-    validateCachAmount(amount)
-
-    const balance = account.balance + amount
-    await takeCashIn()
-    await updateAccountBalance(account, balance)
+    this.account = account
 
     return true
   }
 
-  async withdraw (account: Account, amount: number): Promise<boolean> {
-    validateCachAmount(amount)
+  async enterPIN (PIN: string): Promise<boolean> {
+    if (this.account === null) {
+      throw new ATMControllerError(500, 'User account is not set')
+    }
 
-    if (amount > account.balance) {
+    if (PIN.length < 4) {
+      throw new ATMControllerError(400, 'Invalid PIN number')
+    }
+    await validatePIN(this.account, PIN)
+
+    return true
+  }
+
+  checkBalance (): number {
+    if (this.account === null) {
+      throw new ATMControllerError(500, 'User account is not set')
+    }
+
+    return this.account.balance
+  }
+
+  async deposit (amount: number): Promise<boolean> {
+    if (this.account === null) {
+      throw new ATMControllerError(500, 'User account is not set')
+    }
+
+    validateCashAmount(amount)
+
+    const balance = this.account.balance + amount
+    await takeCashIn()
+    await updateAccountBalance(this.account, balance)
+
+    return true
+  }
+
+  async withdraw (amount: number): Promise<boolean> {
+    if (this.account === null) {
+      throw new ATMControllerError(500, 'User account is not set')
+    }
+
+    validateCashAmount(amount)
+
+    if (amount > this.account.balance) {
       throw new ATMControllerError(400, 'Not enough balance')
     }
 
-    const balance = account.balance - amount
+    const balance = this.account.balance - amount
     await takeCashOut()
-    await updateAccountBalance(account, balance)
+    await updateAccountBalance(this.account, balance)
 
     return true
   }
