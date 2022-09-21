@@ -4,10 +4,12 @@
   "description": "Simple APM controller",
   "main": "index.js",
   "scripts": {
-    "start": "ts-node src/index.ts",
-    "compile": "tsc build",
+    "start:demo": "ts-node src/index.ts",
+    "compile": "tsc",
     "test": "jest",
-    "lint": "eslint ./src --fix"
+    "lint": "eslint src --fix",
+    "docker:build": "docker build -t atm:ryu .",
+    "docker:run": "docker run --rm --name atm atm:ryu "
   },
   "jest": {
     "transform": {

@@ -1,3 +1,6 @@
+/**
+ * This file is for demonstration purpose only
+ */
 import { ATMController } from './atm';
 
 /**
@@ -5,8 +8,6 @@ import { ATMController } from './atm';
  *  - User inserts card and then ATM session created
  *  - User does operations with the account
  *  - Exit
- *
- *  This file is for demonstration only
  */
 async function ATMflow (commands: string[]): Promise<unknown> {
   try {

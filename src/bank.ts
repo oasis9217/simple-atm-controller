@@ -1,7 +1,7 @@
 /**
  * Mock functions of Bank service
  */
-import jwt from 'jsonwebtoken'
+import { sign } from 'jsonwebtoken'
 import db from './sampleDB.json'
 import { BankControllerError } from './errors'
 
@@ -41,7 +41,7 @@ function decodeAccount (json: AccountJSON): Account {
 }
 
 function simpleHash (str: string): string {
-  return jwt.sign(str, 'simple')
+  return sign(str, 'simple')
 }
 
 export async function fetchAccount (cardNumber: string): Promise<Account> {
@@ -71,6 +71,7 @@ export async function getAccountBalance (account: Account): Promise<number> {
 export async function updateAccountBalance (account: Account, balance: number): Promise<boolean> {
   /**
    * Never should appear in practice
+   * TODO: writing to JSON file
    */
   mockAccounts.forEach(a => {
     if (a.accountID === account.accountID) {
